@@ -1,0 +1,7 @@
+// ====== Variables ======
+bool ancienEtatBouton = HIGH;
+unsigned long tempsAppui = 0;
+unsigned long tempsRelache = 0;
+
+String morseCourant = "";
+String texteDecode = "";
