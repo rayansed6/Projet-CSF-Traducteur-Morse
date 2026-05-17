@@ -1,0 +1,8 @@
+// ====== Broches ======
+const int boutonPin = 2;   // bouton entre D2 et GND
+const int buzzerPin = 8;   // optionnel
+
+// ====== Seuils de temps (à ajuster) ======
+const unsigned long seuilTrait = 300;   // > 300 ms = trait
+const unsigned long finLettre = 700;    // silence > 700 ms = fin lettre
+const unsigned long finMot = 1500;      // silence > 1500 ms = espace
