@@ -1,0 +1,90 @@
+// ====== Table Morse ======
+const char* tableMorse[] = {
+  ".-", "-...", "-.-.", "-..", ".", "..-.", "--.", "....", "..", ".---",
+  "-.-", ".-..", "--", "-.", "---", ".--.", "--.-", ".-.", "...", "-",
+  "..-", "...-", ".--", "-..-", "-.--", "--..",
+  "-----", ".----", "..---", "...--", "....-", ".....", "-....", "--...",
+  "---..", "----."
+};
+
+const char tableChar[] = {
+  'A','B','C','D','E','F','G','H','I','J',
+  'K','L','M','N','O','P','Q','R','S','T',
+  'U','V','W','X','Y','Z',
+  '0','1','2','3','4','5','6','7','8','9'
+};
+
+char decoderMorse(String code) {
+  for (int i = 0; i < 36; i++) {
+    if (code == tableMorse[i]) {
+      return tableChar[i];
+    }
+  }
+  return '?';
+}
+
+void ajouterLettreSiTerminee() {
+  if (morseCourant.length() > 0 && (millis() - tempsRelache > finLettre)) {
+    char lettre = decoderMorse(morseCourant);
+    texteDecode += lettre;
+    morseCourant = "";
+
+    Serial.print("Lettre decodee : ");
+    Serial.println(lettre);
+
+    Serial.print("Texte : ");
+    Serial.println(texteDecode);
+  }
+}
+
+void ajouterEspaceSiNouveauMot() {
+  if (texteDecode.length() > 0 && texteDecode[texteDecode.length() - 1] != ' ') {
+    if (millis() - tempsRelache > finMot) {
+      texteDecode += ' ';
+      Serial.println("Espace ajoute");
+      Serial.print("Texte : ");
+      Serial.println(texteDecode);
+    }
+  }
+}
+
+void setup() {
+  pinMode(boutonPin, INPUT_PULLUP);
+  pinMode(buzzerPin, OUTPUT);
+
+  Serial.begin(9600);
+  Serial.println("Traducteur Morse demarre");
+}
+
+void loop() {
+  bool etatBouton = digitalRead(boutonPin);
+
+  // Appui détecté
+  if (ancienEtatBouton == HIGH && etatBouton == LOW) {
+    tempsAppui = millis();
+    digitalWrite(buzzerPin, HIGH); // optionnel
+  }
+
+  // Relâchement détecté
+  if (ancienEtatBouton == LOW && etatBouton == HIGH) {
+    unsigned long duree = millis() - tempsAppui;
+    tempsRelache = millis();
+    digitalWrite(buzzerPin, LOW); // optionnel
+
+    if (duree < seuilTrait) {
+      morseCourant += ".";
+      Serial.println("Point");
+    } else {
+      morseCourant += "-";
+      Serial.println("Trait");
+    }
+
+    Serial.print("Morse en cours : ");
+    Serial.println(morseCourant);
+  }
+
+  ajouterLettreSiTerminee();
+  ajouterEspaceSiNouveauMot();
+
+  ancienEtatBouton = etatBouton;
+}
