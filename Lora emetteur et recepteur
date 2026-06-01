@@ -1,4 +1,4 @@
-// EMETTEUR
+// ÉMETTEUR
 
 #include <SPI.h>
 #include <LoRa.h>
@@ -25,7 +25,7 @@ void loop() {
 }
 
 
-// RECEPTEUR
+// RÉCEPTEUR
 
 #include <SPI.h>
 #include <LoRa.h>
